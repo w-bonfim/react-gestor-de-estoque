@@ -1,10 +1,53 @@
-export default function ItemForm() {
-    const handleSubmit = () => {
+import { useContext, useRef, useState } from "react"
+import  StockItem, { CATEGORIES } from "../model/StockItem"
+import { StockContext } from "../contexts/StockContext"
 
+export default function ItemForm({ formUpdate}) {
+
+    const defaultItem = {
+      name: "",
+      description: "",
+      quantity: 0,
+      price: 0,
+      category: ""
     }
 
-    const handleChange = () => {
+    const [item, setItem] = useState(formUpdate ? formUpdate : defaultItem) 
+    const { addItem, updateItem } = useContext(StockContext)
+    const inputRef = useRef(null)
+    
+    const handleSubmit = (env) => {
+      env.preventDefault()
+
+      try {
+
+        if (formUpdate) {
+          updateItem(formUpdate.id, item)
+          alert(`Item ${formUpdate.name} atualizado com sucesso!`)
+
+        } else {
+          
+          const stockItem = new StockItem(item)
+          addItem(stockItem)
+          setItem(defaultItem) // limpar os campos para estado default
+          alert(`Item cadastrado com sucesso`)
+        }
         
+      } catch(err) {
+        console.log(`Error ${err}`)
+      } finally {
+        inputRef.current.focus() //focar no primeiro campo do forumulário
+      }
+    }
+
+    //armazenando o valor do estado de todos os campos de uma forma gernerica 
+    const handleChange = (env) => {
+        setItem(currentState => {
+          return {
+            ...currentState,
+            [env.target.name]: env.target.value
+          }
+        })
     }
 
     return (

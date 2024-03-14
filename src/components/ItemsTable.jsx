@@ -1,10 +1,11 @@
 import { useContext } from "react"
 import { StockContext } from "../contexts/StockContext"
 import { Link } from "react-router-dom"
+import DeleteButton from "./DeleteButton"
 
 export default function ItemsTable() {
     const { items } = useContext(StockContext)
-
+   
     return (
         <table>
             <thead>
@@ -17,8 +18,8 @@ export default function ItemsTable() {
                 </tr>
             </thead>
             <tbody>
-                {items.map((item) => {
-                    <tr>
+                {items.map(item => (
+                    <tr key={item.id}>
                         <td>{ item.id }</td>
                         <td>{ item.name }</td>
                         <td>{ item.quantity }</td>
@@ -30,9 +31,10 @@ export default function ItemsTable() {
                             <Link to={`/items/${item.id}/update`} className="button is-small">
                                 Atualizar
                             </Link>
+                            <DeleteButton id={item.id} name={item.name} />
                         </td>
                     </tr>
-                })}
+                ))}
             </tbody>
         </table>
     )
